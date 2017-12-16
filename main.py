@@ -15,14 +15,18 @@ def execute_notebook(source: str) -> str:
     :return: Result of the notebook invocation
     """
 
+    logger.debug("Executing notebook")
     in_memory_source = StringIO(source)
     nb = nbformat.read(in_memory_source, as_version=4)
+
+    logger.debug("Launching kernels")
     ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
     ep.preprocess(nb, {'metadata': {'path': '/tmp/'}})
 
     ex = StringIO()
     nbformat.write(nb, ex)
 
+    logger.debug("Returning results")
     return ex.getvalue()
 
 test_page = """
