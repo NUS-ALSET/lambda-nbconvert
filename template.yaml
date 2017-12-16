@@ -8,6 +8,8 @@ Resources:
       Handler: main.handler
       Runtime: python3.6
       CodeUri: ./build/code
+      Timeout: 180
+      MemorySize: 512
       Events:
         ExecuteNotebook:
           Type: Api
