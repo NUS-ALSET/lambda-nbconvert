@@ -1,11 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: A hello world application.
+Description: Jupyter Executor Service.
 Resources:
-  HelloWorldFunction:
+  JupyterExecutor:
     Properties:
-      CodeUri: s3://alsetlambda/e3104b5c24bb1805f2efc28f858eaca4
+      CodeUri: s3://aws-nbformat-demo/969d72559445d7d59696a46dfb347cf5
       Events:
-        ListCustomers:
+        ExecuteNotebook:
           Properties:
             Method: any
             Path: /

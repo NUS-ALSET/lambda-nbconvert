@@ -2,28 +2,17 @@
 
 AWS SAM project that allows invoking Jupyter notebooks dynamically using the AWS Lambda as the execution environment.
 
-## Usage ##
-
-To create and deploy the SAM Hello World example, first ensure that you've met the requirements described in the [root README](../../README.md). Then follow the steps below.
 
 ### Test your application locally ###
 
 Use [SAM Local](https://github.com/awslabs/aws-sam-local) to run your Lambda function locally:
+    
+    ./link.sh  # Installs and links all Python dependencies to the current directory
+    sam local start-api
+    ./unlink.sh # Unlinks all dependencies from the current directory
 
-    sam local invoke "HelloWorldFunction" -e event.json
+### Deploy ###
 
-### Package artifacts ###
+Everything can be deployed with a single command
 
-Run the following command, replacing `BUCKET-NAME` with the name of your bucket:
-
-    sam package --template-file template.yaml --s3-bucket BUCKET-NAME --output-template-file packaged-template.yaml
-
-This creates a new template file, packaged-template.yaml, that you will use to deploy your serverless application.
-
-### Deploy to AWS CloudFormation ###
-
-Run the following command, replacing `MY-NEW-STACK` with a name for your CloudFormation stack.
-
-    sam deploy --template-file packaged-template.yaml --stack-name MY-NEW-STACK --capabilities CAPABILITY_IAM
-
-This uploads your template to an S3 bucket and deploys the specified resources using AWS CloudFormation.
+    ./deploy.sh <Bucket-Name> <Stack-Name> <Region>

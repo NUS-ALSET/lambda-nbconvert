@@ -138,7 +138,7 @@ def handler(event, context):
         print("Should process notebook here before returning JSON")
         response = {
             "statusCode": 200,
-            "body": event["body"],
+            "body": execute_notebook(event["body"]),
             "headers": {
                 'Content-Type': 'application/json',
             }

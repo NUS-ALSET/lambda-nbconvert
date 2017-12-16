@@ -7,7 +7,7 @@ Resources:
     Properties:
       Handler: main.handler
       Runtime: python3.6
-      CodeUri: .
+      CodeUri: ./build/code
       Events:
         ExecuteNotebook:
           Type: Api
