@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: A hello world application.
+Resources:
+  HelloWorldFunction:
+    Properties:
+      CodeUri: s3://alsetlambda/e3104b5c24bb1805f2efc28f858eaca4
+      Events:
+        ListCustomers:
+          Properties:
+            Method: any
+            Path: /
+          Type: Api
+      Handler: main.handler
+      Runtime: python3.6
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31

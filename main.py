@@ -23,7 +23,7 @@ var myAlert = function(){
 }
 var postData = function(data){
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/');
+  xhr.open('POST', '');
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onload = function() {
     if (xhr.status === 200) {
