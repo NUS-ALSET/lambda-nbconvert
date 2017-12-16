@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 os.environ['PYTHONPATH'] = os.getcwd()
 
 
-def execute_notebook(source: str) -> str:
+def execute_notebook(source):
     """
 
     :param source: Jupyter Notebook
@@ -140,9 +140,10 @@ def handler(event, context):
     else:
         print("------ NOT A GET ------")
         print("Should process notebook here before returning JSON")
+        result = execute_notebook(event["body"])
         response = {
             "statusCode": 200,
-            "body": execute_notebook(event["body"]),
+            "body": result,
             "headers": {
                 'Content-Type': 'application/json',
             }
