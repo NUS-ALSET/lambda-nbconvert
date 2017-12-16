@@ -1,6 +1,6 @@
-# AWS SAM Hello World Example #
+# AWS SAM Jupyter 
 
-A simple AWS SAM template that specifies a single Lambda function.
+AWS SAM project that allows invoking Jupyter notebooks dynamically using the AWS Lambda as the execution environment.
 
 ## Usage ##
 

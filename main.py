@@ -1,7 +1,29 @@
-from cgi import parse_header, parse_multipart
-#import cgi
-import json
-import datetime
+import logging
+import os
+import nbformat
+from nbconvert.preprocessors import ExecutePreprocessor
+from io import StringIO
+
+logger = logging.getLogger(__name__)
+os.environ['PYTHONPATH'] = os.getcwd()
+
+
+def execute_notebook(source: str) -> str:
+    """
+
+    :param source: Jupyter Notebook
+    :return: Result of the notebook invocation
+    """
+
+    in_memory_source = StringIO(source)
+    nb = nbformat.read(in_memory_source, as_version=4)
+    ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
+    ep.preprocess(nb, {'metadata': {'path': '/tmp/'}})
+
+    ex = StringIO()
+    nbformat.write(nb, ex)
+
+    return ex.getvalue()
 
 test_page = """
 <!DOCTYPE html>
