@@ -1,7 +1,33 @@
-from cgi import parse_header, parse_multipart
-#import cgi
-import json
-import datetime
+import logging
+import os
+import nbformat
+from nbconvert.preprocessors import ExecutePreprocessor
+from io import StringIO
+
+logger = logging.getLogger(__name__)
+os.environ['PYTHONPATH'] = os.getcwd()
+
+
+def execute_notebook(source):
+    """
+
+    :param source: Jupyter Notebook
+    :return: Result of the notebook invocation
+    """
+
+    logger.debug("Executing notebook")
+    in_memory_source = StringIO(source)
+    nb = nbformat.read(in_memory_source, as_version=4)
+
+    logger.debug("Launching kernels")
+    ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
+    ep.preprocess(nb, {'metadata': {'path': '/tmp/'}})
+
+    ex = StringIO()
+    nbformat.write(nb, ex)
+
+    logger.debug("Returning results")
+    return ex.getvalue()
 
 test_page = """
 <!DOCTYPE html>
@@ -114,9 +140,10 @@ def handler(event, context):
     else:
         print("------ NOT A GET ------")
         print("Should process notebook here before returning JSON")
+        result = execute_notebook(event["body"])
         response = {
             "statusCode": 200,
-            "body": event["body"],
+            "body": result,
             "headers": {
                 'Content-Type': 'application/json',
             }

@@ -1,16 +1,18 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: A hello world application.
+Description: Jupyter Executor Service.
 Resources:
-  HelloWorldFunction:
+  JupyterExecutor:
     Properties:
-      CodeUri: s3://alsetlambda/e3104b5c24bb1805f2efc28f858eaca4
+      CodeUri: s3://aws-nbformat-demo/9b669a82ab585efc89a3e01e8a444b11
       Events:
-        ListCustomers:
+        ExecuteNotebook:
           Properties:
             Method: any
             Path: /
           Type: Api
       Handler: main.handler
+      Memory: 512
       Runtime: python3.6
+      Timeout: 180
     Type: AWS::Serverless::Function
 Transform: AWS::Serverless-2016-10-31
