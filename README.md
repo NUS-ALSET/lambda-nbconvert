@@ -7,12 +7,12 @@ AWS SAM project that allows invoking Jupyter notebooks dynamically using the AWS
 
 Use [SAM Local](https://github.com/awslabs/aws-sam-local) to run your Lambda function locally:
     
-    bash link.sh  # Installs and links all Python dependencies to the current directory
+    ./scripts/link.sh  # Installs and links all Python dependencies to the current directory
     sam local start-api
-    bash unlink.sh # Unlinks all dependencies from the current directory
+    ./scripts/unlink.sh # Unlinks all dependencies from the current directory
 
 ### Deploy ###
 
 Everything can be deployed with a single command
 
-    bash deploy.sh <Bucket-Name> <Stack-Name> <Region>
+    ./scripts/deploy.sh <Bucket-Name> <Stack-Name> <Region>
