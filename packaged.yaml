@@ -3,7 +3,7 @@ Description: Jupyter Executor Service.
 Resources:
   JupyterExecutor:
     Properties:
-      CodeUri: s3://aws-nbformat-demo/9b669a82ab585efc89a3e01e8a444b11
+      CodeUri: s3://aws-nbformat-demo/0038ee258ea40e6452bf0ddbfea440b7
       Events:
         ExecuteNotebook:
           Properties:
@@ -11,7 +11,7 @@ Resources:
             Path: /
           Type: Api
       Handler: main.handler
-      Memory: 512
+      MemorySize: 512
       Runtime: python3.6
       Timeout: 180
     Type: AWS::Serverless::Function
