@@ -3,9 +3,15 @@ import os
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 from io import StringIO
+import json
+
+from timeit import default_timer as timer
+start = timer()
+
 
 logger = logging.getLogger(__name__)
 os.environ['PYTHONPATH'] = os.getcwd()
+
 
 
 def execute_notebook(source):
@@ -54,8 +60,8 @@ var postData = function(data){
   xhr.onload = function() {
     if (xhr.status === 200) {
         var userInfo = JSON.parse(xhr.responseText);
-        console.log(userInfo);
-        document.getElementById("responseJSON").value = JSON.stringify(userInfo);
+        console.log(userInfo.duration, "seconds of execution time.")
+        document.getElementById("responseJSON").value = JSON.stringify(userInfo.ipynb);
     }
     else{
       console.log("Nope");
@@ -141,12 +147,14 @@ def handler(event, context):
         print("------ NOT A GET ------")
         print("Should process notebook here before returning JSON")
         result = execute_notebook(event["body"])
+        result = json.loads(result)
+        end = timer()
+        duration = end - start
         response = {
             "statusCode": 200,
-            "body": result,
+            "body": json.dumps({"duration": duration,"ipynb": result}),
             "headers": {
                 'Content-Type': 'application/json',
             }
-
         }
         return response
