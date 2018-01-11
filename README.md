@@ -3,13 +3,24 @@
 AWS SAM project that allows invoking Jupyter notebooks dynamically using the AWS Lambda as the execution environment.
 
 
+
+
 ### Test your application locally ###
 
-Use [SAM Local](https://github.com/awslabs/aws-sam-local) to run your Lambda function locally:
+If running the API for the first time, or **when requirements.txt** file was updated, the following script
+should be executed first:
+
+    ./scripts/link.sh
     
-    ./scripts/link.sh  # Installs and links all Python dependencies to the current directory
+It will install and build all dependencies against the Amazon Linux and will place them in the `build/code` 
+directory.
+
+
+Use [SAM Local](https://github.com/awslabs/aws-sam-local) to run your Lambda function locally:
+
     sam local start-api
-    ./scripts/unlink.sh # Unlinks all dependencies from the current directory
+    
+The API will be running at[http://localhost:3000](http://localhost:3000)
 
 ### Deploy ###
 

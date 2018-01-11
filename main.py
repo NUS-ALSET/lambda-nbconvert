@@ -1,5 +1,19 @@
-import logging
 import os
+import sys
+
+
+CURRENT_DIR = os.getcwd()
+BUILD_DIR = os.path.join(os.getcwd(), "build", "code")
+
+sys.path.append(CURRENT_DIR)
+sys.path.append(BUILD_DIR)
+
+os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ":" + CURRENT_DIR + ":" + BUILD_DIR
+
+
+
+
+import logging
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 from io import StringIO
@@ -7,8 +21,6 @@ import json
 
 from timeit import default_timer as timer
 logger = logging.getLogger(__name__)
-os.environ['PYTHONPATH'] = os.getcwd()
-
 
 
 def execute_notebook(source):
