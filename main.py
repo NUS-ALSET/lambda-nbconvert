@@ -6,9 +6,6 @@ from io import StringIO
 import json
 
 from timeit import default_timer as timer
-start = timer()
-
-
 logger = logging.getLogger(__name__)
 os.environ['PYTHONPATH'] = os.getcwd()
 
@@ -144,6 +141,7 @@ def handler(event, context):
         }
         return response
     else:
+        start = timer()
         print("------ NOT A GET ------")
         print("Should process notebook here before returning JSON")
         result = execute_notebook(event["body"])
