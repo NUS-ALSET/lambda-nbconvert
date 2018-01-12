@@ -35,7 +35,7 @@ def execute_notebook(source):
     nb = nbformat.read(in_memory_source, as_version=4)
 
     logger.debug("Launching kernels")
-    ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
+    ep = ExecutePreprocessor(timeout=600, kernel_name='python3', allow_errors=True)
     ep.preprocess(nb, {'metadata': {'path': '/tmp/'}})
 
     ex = StringIO()
@@ -48,7 +48,7 @@ homepage = ""
 with open('index.html') as f:
     homepage=f.read()
 
-print(homepage) 
+# print(homepage)
 
 def handler(event, context):
     print(event)
