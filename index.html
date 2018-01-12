@@ -29,11 +29,11 @@ var postData = function(data){
       console.log("Nope");
       document.getElementById("responseJSON").value = "Nope";
     }
-};
-xhr.send(JSON.stringify(data)); 
-  
+  };
+  xhr.send(JSON.stringify(data)); 
 }
 
+ 
 </script>
 <h3>ipynb json to post</h3>
 <textarea id="myTextarea" cols=80 rows=20>
@@ -76,9 +76,47 @@ xhr.send(JSON.stringify(data));
        }        
 </textarea><br/>
 <button onclick="myAlert()">Post JSON</button> 
+<h3>Choose a notebook file to upload and then click Post JSON.</h3>
+<input id="file" type="file" />
+<button onclick="downloadNotebook()">Download notebook</button> 
+
 <h3>resulting ipynb json returned from lambda</h3>
 <textarea id="responseJSON" cols=80 rows=8>
 </textarea>
+<script>
+//Functions to watch for json file uploads    
+function onChange(event) {
+        var reader = new FileReader();
+        reader.onload = onReaderLoad;
+        reader.readAsText(event.target.files[0]);
+}
 
+function onReaderLoad(event){
+        //console.log(event.target.result);
+        var obj = JSON.parse(event.target.result);
+        document.getElementById("myTextarea").value = JSON.stringify(obj);
+}
+    
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
+function downloadNotebook(){
+  var fileContents = document.getElementById("responseJSON").value;
+  download("notebook.ipynb",fileContents);
+}
+
+document.getElementById('file').addEventListener('change', onChange);
+
+</script>
 </body>
 </html>

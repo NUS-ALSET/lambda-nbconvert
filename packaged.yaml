@@ -3,7 +3,7 @@ Description: Jupyter Executor Service.
 Resources:
   JupyterExecutor:
     Properties:
-      CodeUri: s3://agilevision-lambda-functions/b0f9508f7c2a24e92309ec4f87972c20
+      CodeUri: s3://alsetlambda/63820c8cf15e611749fd3e4cb05bcd11
       Events:
         ExecuteNotebook:
           Properties:
