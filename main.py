@@ -1,6 +1,6 @@
 import os
 import sys
-
+import ast
 
 CURRENT_DIR = os.getcwd()
 BUILD_DIR = os.path.join(os.getcwd(), "build", "code")
@@ -55,6 +55,16 @@ def handler(event, context):
     print("--body-")
     print(event["body"])
     print("--End body--")
+    # print(event["body"].keys())
+    print(type(event["body"]))
+    # files = ast.literal_eval(event["body"])
+    if(event["body"]):
+        files = json.loads(event["body"])
+        print("----------Files--------")
+        print(files)
+        print(len(files))
+    # print(d['notebook'])
+
     if event['httpMethod'] == 'GET':
         print("------ THIS IS A GET ------")
         response = {
@@ -69,7 +79,11 @@ def handler(event, context):
         start = timer()
         print("------ NOT A GET ------")
         print("Should process notebook here before returning JSON")
-        result = execute_notebook(event["body"])
+        
+        # result = execute_notebook(event["body"])
+        result = execute_notebook(json.dumps(files['notebook']))
+        # print("------------Result---------")
+        # print(type(result))
         result = json.loads(result)
         end = timer()
         duration = end - start
