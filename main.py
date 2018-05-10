@@ -1,6 +1,7 @@
 import os
 import sys
 import ast
+import tempfile
 
 CURRENT_DIR = os.getcwd()
 BUILD_DIR = os.path.join(os.getcwd(), "build", "code")
@@ -51,6 +52,8 @@ with open('index.html') as f:
 # print(homepage)
 
 def handler(event, context):
+    
+    # !ls
     print(event)
     print("--body-")
     print(event["body"])
@@ -64,6 +67,14 @@ def handler(event, context):
         print(files)
         print(len(files))
     # print(d['notebook'])
+        print("-------files inside container--------------")
+        # os.chdir('/tmp')
+        # tmpdir = tempfile.TemporaryDirectory()
+        # os.chdir(tmpdir)
+        with open('data1.txt', 'w') as outfile:
+            json.dump(files['text'], outfile)
+        os.listdir()
+        print("----------------end-------------")
 
     if event['httpMethod'] == 'GET':
         print("------ THIS IS A GET ------")
