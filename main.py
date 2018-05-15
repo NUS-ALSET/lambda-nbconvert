@@ -1,6 +1,7 @@
 import os
 import sys
-
+import ast
+import tempfile
 
 CURRENT_DIR = os.getcwd()
 BUILD_DIR = os.path.join(os.getcwd(), "build", "code")
@@ -51,10 +52,30 @@ with open('index.html') as f:
 # print(homepage)
 
 def handler(event, context):
+    
+    # !ls
     print(event)
     print("--body-")
     print(event["body"])
     print("--End body--")
+    # print(event["body"].keys())
+    print(type(event["body"]))
+    # files = ast.literal_eval(event["body"])
+    if(event["body"]):
+        files = json.loads(event["body"])
+        print("----------Files--------")
+        print(files)
+        print(len(files))
+    # print(d['notebook'])
+        print("-------files inside container--------------")
+        # os.chdir('/tmp')
+        # tmpdir = tempfile.TemporaryDirectory()
+        # os.chdir(tmpdir)
+        with open('data1.txt', 'w') as outfile:
+            json.dump(files['text'], outfile)
+        os.listdir()
+        print("----------------end-------------")
+
     if event['httpMethod'] == 'GET':
         print("------ THIS IS A GET ------")
         response = {
@@ -69,7 +90,11 @@ def handler(event, context):
         start = timer()
         print("------ NOT A GET ------")
         print("Should process notebook here before returning JSON")
-        result = execute_notebook(event["body"])
+        
+        # result = execute_notebook(event["body"])
+        result = execute_notebook(json.dumps(files['notebook']))
+        # print("------------Result---------")
+        # print(type(result))
         result = json.loads(result)
         end = timer()
         duration = end - start

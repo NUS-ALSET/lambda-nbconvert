@@ -3,7 +3,7 @@ Description: Jupyter Executor Service.
 Resources:
   JupyterExecutor:
     Properties:
-      CodeUri: s3://alsetlambda/63820c8cf15e611749fd3e4cb05bcd11
+      CodeUri: s3://alsetlambda/71f2cb14981ae54dc0438d11916be689
       Events:
         ExecuteNotebook:
           Properties:

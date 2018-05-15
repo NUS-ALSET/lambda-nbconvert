@@ -11,9 +11,22 @@
 var myAlert = function(){
   console.log("POSTing ipynb text as JSON");
   var x = document.getElementById("myTextarea").value;
-  var obj = JSON.parse(x);
-  //console.log(obj);
-  postData(obj)
+  var y = document.getElementById("textField").value;
+  
+  console.log(x)
+  console.log(y)
+
+  if(x)
+  var nb = JSON.parse(x);
+  if(y)
+  var tfile = JSON.parse(y);
+  
+  var result = {};
+  result['notebook'] = nb
+  result['text'] = tfile
+
+  console.log(nb);
+  postData(result)
 }
 var postData = function(data){
   var xhr = new XMLHttpRequest();
@@ -35,7 +48,7 @@ var postData = function(data){
 
  
 </script>
-<h3>ipynb json to post</h3>
+<h3>ipynb json to post here</h3>
 <textarea id="myTextarea" cols=80 rows=20>
     {
         "cells": [
@@ -80,21 +93,52 @@ var postData = function(data){
 <input id="file" type="file" />
 <button onclick="downloadNotebook()">Download notebook</button> 
 
+<h3> Upload a txt file <h3>
+<textarea id="textField" cols=80 rows=8>
+</textarea><br/>
+<input id="textfile" type="file" />
+
+
 <h3>resulting ipynb json returned from lambda</h3>
 <textarea id="responseJSON" cols=80 rows=8>
 </textarea>
 <script>
 //Functions to watch for json file uploads    
 function onChange(event) {
+        console.log('onCHange entered')
+        console.log((event.target.files.length))
+        
         var reader = new FileReader();
         reader.onload = onReaderLoad;
         reader.readAsText(event.target.files[0]);
+        
+}
+
+function onChange2(event){
+        console.log('onChange2 entered')
+        var reader2 = new FileReader();
+        reader2.onload = onReaderLoad2;
+        reader2.readAsText(event.target.files[0]);
+        console.log(reader2)
 }
 
 function onReaderLoad(event){
         //console.log(event.target.result);
-        var obj = JSON.parse(event.target.result);
+        if(event.target.result){
+          var obj = JSON.parse(event.target.result);  
+        }
+        
         document.getElementById("myTextarea").value = JSON.stringify(obj);
+}
+
+function onReaderLoad2(event){
+        //console.log(event.target.result);
+        if(event.target.result){
+          var obj = event.target.result;  
+        }
+        console.log(typeof obj)
+        console.log(obj)
+        document.getElementById("textField").value = obj;
 }
     
 function download(filename, text) {
@@ -116,6 +160,7 @@ function downloadNotebook(){
 }
 
 document.getElementById('file').addEventListener('change', onChange);
+document.getElementById('textfile').addEventListener('change', onChange2);
 
 </script>
 </body>
