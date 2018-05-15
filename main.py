@@ -19,9 +19,24 @@ import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 from io import StringIO
 import json
+import base64
 
 from timeit import default_timer as timer
 logger = logging.getLogger(__name__)
+
+
+def base64_decode_and_persist(filename, contents):
+    os.chdir('/tmp')
+    decoded = base64.b64decode(contents)
+    with open(filename, 'wb') as outfile:
+        outfile.write(decoded)
+        
+
+def save_files_to_temp_dir(files):
+    print(type(files))
+    for key in files:
+        print("Processing file: " + key)
+        base64_decode_and_persist(key, files[key])
 
 
 def execute_notebook(source):
@@ -49,35 +64,9 @@ homepage = ""
 with open('index.html') as f:
     homepage=f.read()
 
-# print(homepage)
-
 def handler(event, context):
-    
-    # !ls
-    print(event)
-    print("--body-")
-    print(event["body"])
-    print("--End body--")
-    # print(event["body"].keys())
-    print(type(event["body"]))
-    # files = ast.literal_eval(event["body"])
-    if(event["body"]):
-        files = json.loads(event["body"])
-        print("----------Files--------")
-        print(files)
-        print(len(files))
-    # print(d['notebook'])
-        print("-------files inside container--------------")
-        # os.chdir('/tmp')
-        # tmpdir = tempfile.TemporaryDirectory()
-        # os.chdir(tmpdir)
-        with open('data1.txt', 'w') as outfile:
-            json.dump(files['text'], outfile)
-        os.listdir()
-        print("----------------end-------------")
 
     if event['httpMethod'] == 'GET':
-        print("------ THIS IS A GET ------")
         response = {
             "statusCode": 200,
             "body": homepage,
@@ -87,14 +76,16 @@ def handler(event, context):
         }
         return response
     else:
-        start = timer()
-        print("------ NOT A GET ------")
-        print("Should process notebook here before returning JSON")
-        
-        # result = execute_notebook(event["body"])
-        result = execute_notebook(json.dumps(files['notebook']))
-        # print("------------Result---------")
-        # print(type(result))
+        request_body = json.loads(event["body"])
+
+        notebook_source = request_body['notebook']
+        attached_files = request_body['files'] if 'files' in request_body else {}
+        save_files_to_temp_dir(attached_files)
+
+
+
+        start = timer()        
+        result = execute_notebook(json.dumps(notebook_source))
         result = json.loads(result)
         end = timer()
         duration = end - start

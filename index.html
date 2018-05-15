@@ -1,167 +1,272 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>JS Bin</title>
+  <title>Jupyter AWS Lambda - Demo Page</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+    crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+    crossorigin="anonymous"></script>
+
+  <style type="text/css">
+    .code-container {
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .page-header {
+      margin-bottom: 48px;
+    }
+
+    .hide {
+      display: none;
+    }
+  </style>
 </head>
+
 <body>
-<script>
-  
-var myAlert = function(){
-  console.log("POSTing ipynb text as JSON");
-  var x = document.getElementById("myTextarea").value;
-  var y = document.getElementById("textField").value;
-  
-  console.log(x)
-  console.log(y)
 
-  if(x)
-  var nb = JSON.parse(x);
-  if(y)
-  var tfile = JSON.parse(y);
-  
-  var result = {};
-  result['notebook'] = nb
-  result['text'] = tfile
 
-  console.log(nb);
-  postData(result)
-}
-var postData = function(data){
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', '');
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-        var userInfo = JSON.parse(xhr.responseText);
-        console.log(userInfo.duration, "seconds of execution time.")
-        document.getElementById("responseJSON").value = JSON.stringify(userInfo.ipynb);
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col col-md-12 page-header text-center">
+        <h1 class="text-center">Jupyter AWS Lambda - Demo Page</h1>
+        <br>
+        <button type="button" onClick="javascript:executeNotebook()" class="btn btn-danger">Execute Notebook</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6  col-sm-12 col-12">
+        <h3 class="text-center">Input Jupyter Notebook
+          <button type="button" onClick="javascript: document.getElementById('file').click()" class="btn btn-sm btn-primary">Upload from a file</a>
+        </h3>
+        <textarea id="ipynbInputTextField" cols="80" rows="20" class="form-control code-container">
+                {
+                    "cells": [
+                     {
+                      "cell_type": "code",
+                      "execution_count": null,
+                      "metadata": {
+                       "collapsed": true
+                      },
+                      "outputs": [],
+                      "source": [
+                       "for x in range(10):\n",
+                       "    print(x)"
+                      ]
+                     }
+                    ],
+                    "metadata": {
+                     "kernelspec": {
+                      "display_name": "Python 3",
+                      "language": "python",
+                      "name": "python3"
+                     },
+                     "language_info": {
+                      "codemirror_mode": {
+                       "name": "ipython",
+                       "version": 3
+                      },
+                      "file_extension": ".py",
+                      "mimetype": "text/x-python",
+                      "name": "python",
+                      "nbconvert_exporter": "python",
+                      "pygments_lexer": "ipython3",
+                      "version": "3.5.4"
+                     }
+                    },
+                    "nbformat": 4,
+                    "nbformat_minor": 2
+                   }        
+            </textarea>
+        <br/>
+        <div class="hide">
+          <h3>Choose a notebook file to upload and then click Post JSON.</h3>
+          <input id="file" type="file" />
+          <input id="textfile" type="file" />
+          <input id="multipleFiles" type="file" multiple/>
+          <button onclick="downloadNotebook()">Download notebook</button>
+          <button onclick="executeNotebook()">Post JSON</button>
+        </div>
+
+        <h3 class="text-center"> Input text file
+          <button type="button" class="btn btn-sm btn-primary" onclick="javascript:document.getElementById('textfile').click()">Upload from a file</button>
+          <button type="button" class="btn btn-sm btn-warning" onclick="javascript:document.getElementById('multipleFiles').click()">Select mulitple files</button>
+          <h3>
+            <textarea id="textField" cols=80 rows=6 class="form-control">
+            </textarea>
+
+            <span style="font-size: 10px; font-weight: 100" id="fileinfo"></span>
+            <br/>
+      </div>
+
+      <div class="col-md-6 col-sm-12 col-12">
+        <h3 class="text-center">Resulting IPYNB
+          <a href="#" class="btn btn-sm btn-success">Download results</a>
+        </h3>
+        <textarea id="responseJSON" cols="80" rows="20" class="form-control code-container">
+            </textarea>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+  <script>
+
+    var executeNotebook = function () {
+      console.log("POSTing ipynb text as JSON");
+      var x = document.getElementById("ipynbInputTextField").value;
+      var inputText = document.getElementById("textField").value;
+
+
+      if (x)
+        var nb = JSON.parse(x);
+
+      if (inputText && inputText.length > 0 && (!window.UPLOADED_FILES || window.UPLOADED_FILES.length === 0)) {
+        window.UPLOADED_FILES = [
+          {name: 'data1.txt',
+          content: btoa(inputText)}
+        ];
+      }
+
+
+      var result = {};
+      result['notebook'] = nb;
+
+      if (window.UPLOADED_FILES) {
+        result.files = {};
+        for (var i = 0; i < window.UPLOADED_FILES.length; i++) {
+          result.files[window.UPLOADED_FILES[i].name] = window.UPLOADED_FILES[i].content;
+        }
+      }
+
+
+      postData(result)
     }
-    else{
-      console.log("Nope");
-      document.getElementById("responseJSON").value = "Nope";
+    var postData = function (data) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          var userInfo = JSON.parse(xhr.responseText);
+          console.log(userInfo.duration, "seconds of execution time.")
+          document.getElementById("responseJSON").value = JSON.stringify(userInfo.ipynb);
+        }
+        else {
+          console.log("Nope");
+          document.getElementById("responseJSON").value = "Nope";
+        }
+      };
+      xhr.send(JSON.stringify(data));
     }
-  };
-  xhr.send(JSON.stringify(data)); 
-}
-
- 
-</script>
-<h3>ipynb json to post here</h3>
-<textarea id="myTextarea" cols=80 rows=20>
-    {
-        "cells": [
-         {
-          "cell_type": "code",
-          "execution_count": null,
-          "metadata": {
-           "collapsed": true
-          },
-          "outputs": [],
-          "source": [
-           "for x in range(10):\n",
-           "    print(x)"
-          ]
-         }
-        ],
-        "metadata": {
-         "kernelspec": {
-          "display_name": "Python 3",
-          "language": "python",
-          "name": "python3"
-         },
-         "language_info": {
-          "codemirror_mode": {
-           "name": "ipython",
-           "version": 3
-          },
-          "file_extension": ".py",
-          "mimetype": "text/x-python",
-          "name": "python",
-          "nbconvert_exporter": "python",
-          "pygments_lexer": "ipython3",
-          "version": "3.5.4"
-         }
-        },
-        "nbformat": 4,
-        "nbformat_minor": 2
-       }        
-</textarea><br/>
-<button onclick="myAlert()">Post JSON</button> 
-<h3>Choose a notebook file to upload and then click Post JSON.</h3>
-<input id="file" type="file" />
-<button onclick="downloadNotebook()">Download notebook</button> 
-
-<h3> Upload a txt file <h3>
-<textarea id="textField" cols=80 rows=8>
-</textarea><br/>
-<input id="textfile" type="file" />
 
 
-<h3>resulting ipynb json returned from lambda</h3>
-<textarea id="responseJSON" cols=80 rows=8>
-</textarea>
-<script>
-//Functions to watch for json file uploads    
-function onChange(event) {
-        console.log('onCHange entered')
-        console.log((event.target.files.length))
-        
+  </script>
+
+
+  <script>
+
+    function encodeUploadedFiles(files) {
+      console.log(files);
+      for (var i = 0; i < files.length; i++) {
         var reader = new FileReader();
-        reader.onload = onReaderLoad;
-        reader.readAsText(event.target.files[0]);
-        
-}
+        const currentFile = files[i];
+        reader.onload = function (readerEvt) {
+          var binaryString = readerEvt.target.result;
+          var fileInfo = {name: currentFile.name, content: btoa(binaryString) };
+          window.UPLOADED_FILES.push(fileInfo);
+        };
 
-function onChange2(event){
-        console.log('onChange2 entered')
-        var reader2 = new FileReader();
-        reader2.onload = onReaderLoad2;
-        reader2.readAsText(event.target.files[0]);
-        console.log(reader2)
-}
+        reader.readAsBinaryString(files[i]);
+      }
 
-function onReaderLoad(event){
-        //console.log(event.target.result);
-        if(event.target.result){
-          var obj = JSON.parse(event.target.result);  
-        }
-        
-        document.getElementById("myTextarea").value = JSON.stringify(obj);
-}
+      $("#fileinfo").text("Selected files: " + files.length);
+    }
 
-function onReaderLoad2(event){
-        //console.log(event.target.result);
-        if(event.target.result){
-          var obj = event.target.result;  
-        }
-        console.log(typeof obj)
-        console.log(obj)
-        document.getElementById("textField").value = obj;
-}
-    
-function download(filename, text) {
-  var element = document.createElement('a');
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-  element.setAttribute('download', filename);
+    /*
+      This function is being executed each time a new .ipynb file is selected. It puts
+      contents of the .ipynb file to the input text area with the 'ipynbInputTextField' ID.
+    */
+    function onChange(event) {
+      var reader = new FileReader();
+      reader.onload = onInputIpynbReaderLoad;
+      reader.readAsText(event.target.files[0]);
 
-  element.style.display = 'none';
-  document.body.appendChild(element);
+    }
 
-  element.click();
+    function onMultipleFilesSelected(event) {
+      window.UPLOADED_FILES = [];
+      encodeUploadedFiles(event.target.files);
+    }
 
-  document.body.removeChild(element);
-}
+    /* 
+        This function is being executed each time a new text file is selected.
+        It puts contents of the file to the text area with the 'textField' ID.
+        Text area contains a non-encoded version of the file.
+     */
+    function onTextFileSelected(event) {
+      console.log('onTextFileSelected entered')
+      var fileReader = new FileReader();
+      fileReader.onload = textFileReaderLoadHandler;
+      fileReader.readAsText(event.target.files[0]);
 
-function downloadNotebook(){
-  var fileContents = document.getElementById("responseJSON").value;
-  download("notebook.ipynb",fileContents);
-}
+      window.UPLOADED_FILES = [];
 
-document.getElementById('file').addEventListener('change', onChange);
-document.getElementById('textfile').addEventListener('change', onChange2);
+      encodeUploadedFiles([event.target.files[0]]);
+    }
 
-</script>
+    function onInputIpynbReaderLoad(event) {
+      //console.log(event.target.result);
+      if (event.target.result) {
+        var obj = JSON.parse(event.target.result);
+      }
+
+      document.getElementById("ipynbInputTextField").value = JSON.stringify(obj);
+    }
+
+    function textFileReaderLoadHandler(event) {
+      //console.log(event.target.result);
+      if (event.target.result) {
+        var obj = event.target.result;
+      }
+      document.getElementById("textField").value = obj;
+    }
+
+    function download(filename, text) {
+      var element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      element.setAttribute('download', filename);
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
+    }
+
+    function downloadNotebook() {
+      var fileContents = document.getElementById("responseJSON").value;
+      download("notebook.ipynb", fileContents);
+    }
+
+    document.getElementById('file').addEventListener('change', onChange);
+    document.getElementById('textfile').addEventListener('change', onTextFileSelected);
+    document.getElementById('multipleFiles').addEventListener('change', onMultipleFilesSelected);
+
+  </script>
 </body>
+
 </html>
