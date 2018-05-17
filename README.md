@@ -27,3 +27,14 @@ The API will be running at[http://localhost:3000](http://localhost:3000)
 Everything can be deployed with a single command
 
     ./scripts/deploy.sh <Bucket-Name> <Stack-Name> <Region>
+
+
+
+### Upload files that can be referenced by the notebook
+
+Selecting one or multiple files will encode those files using Base64 encoding and contents
+will be uploaded to the working directory of the Jupyter Notebook.
+
+The total size of all files should not exceed 3 MB in Base64 encoding.
+
+Selecting a single file will also put it's contents to the corresponding text field for further preview.
