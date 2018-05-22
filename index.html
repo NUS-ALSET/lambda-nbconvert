@@ -111,12 +111,14 @@
         </h3>
         <textarea id="responseJSON" cols="80" rows="20" class="form-control code-container">
             </textarea>
+        <h3 class="text-center">Test Results
+         <button type="button" class="btn btn-sm btn-success" onclick="downloadResults()">Download Test Results</a>
+        </h3>
+        <textarea id="resultJSON" cols="80" rows="6" class="form-control code-container">
+            </textarea>
       </div>
     </div>
   </div>
-
-
-
 
 
 
@@ -162,7 +164,9 @@
         if (xhr.status === 200) {
           var userInfo = JSON.parse(xhr.responseText);
           console.log(userInfo.duration, "seconds of execution time.")
+          console.log(userInfo,"userInfo")
           document.getElementById("responseJSON").value = JSON.stringify(userInfo.ipynb);
+          document.getElementById("resultJSON").value = JSON.stringify(userInfo.result);
         }
         else {
           console.log("Nope");
@@ -260,6 +264,11 @@
     function downloadNotebook() {
       var fileContents = document.getElementById("responseJSON").value;
       download("notebook.ipynb", fileContents);
+    }
+
+    function downloadResults() {
+      var fileContents = document.getElementById("resultJSON").value;
+      download("results.json", fileContents);
     }
 
     document.getElementById('file').addEventListener('change', onChange);
