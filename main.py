@@ -25,6 +25,13 @@ from timeit import default_timer as timer
 logger = logging.getLogger(__name__)
 
 
+def return_result_json():
+    os.chdir('/tmp')
+    if(os.path.isfile('results.json')):
+        result_file_reader = open('results.json','r')
+        result_file = result_file_reader.read()
+        return result_file
+
 def base64_decode_and_persist(filename, contents):
     os.chdir('/tmp')
     decoded = base64.b64decode(contents)
@@ -87,11 +94,14 @@ def handler(event, context):
         start = timer()        
         result = execute_notebook(json.dumps(notebook_source))
         result = json.loads(result)
+
+        exec_result = return_result_json()
+
         end = timer()
         duration = end - start
         response = {
             "statusCode": 200,
-            "body": json.dumps({"duration": duration,"ipynb": result}),
+            "body": json.dumps({"duration": duration,"ipynb": result, "result": exec_result}),
             "headers": {
                 'Content-Type': 'application/json',
             }
