@@ -106,4 +106,10 @@ def handler(event, context):
                 'Content-Type': 'application/json',
             }
         }
+
+        cors_enabled = os.environ.get('ENABLE_CORS', 'false') == 'true'
+        if cors_enabled:
+            response['headers']['Access-Control-Allow-Origin'] = os.environ.get('CORS_DOMAIN', '*')
+            response['headers']['Access-Control-Allow-Headers'] = os.environ.get('CORS_HEADERS', 'GET,POST')
+
         return response

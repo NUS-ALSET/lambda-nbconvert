@@ -1,9 +1,37 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Jupyter Executor Service.
+Globals:
+  Api:
+    Cors:
+      AllowHeaders: '''Content-Type, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token'''
+      AllowMethods: '''DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'''
+      AllowOrigin: '''*'''
+      MaxAge: '''600'''
+Parameters:
+  CORSDomain:
+    Default: '*'
+    Type: String
+  CORSHeaders:
+    Default: GET,POST
+    Type: String
+  EnableCORS:
+    AllowedValues:
+    - true
+    - false
+    Default: true
+    Type: String
 Resources:
   JupyterExecutor:
     Properties:
-      CodeUri: s3://agilevision-playground/e4ed0a3dde00bd937aecadcbb3cea65e
+      CodeUri: s3://agilevision-playground/ffcf1f289cc8a929ef8ae5944d7e2a0c
+      Environment:
+        Variables:
+          CORS_DOMAIN:
+            Ref: CORSDomain
+          CORS_HEADERS:
+            Ref: CORSHeaders
+          ENABLE_CORS:
+            Ref: EnableCORS
       Events:
         ExecuteNotebook:
           Properties:

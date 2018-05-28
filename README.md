@@ -47,7 +47,7 @@ Once the bucket is created, it can be used for the SAM deployment.
 Use the "deploy.sh" script and provide all the required parameters:
 
 
-    ./scripts/deploy.sh <Bucket-Name> <Stack-Name> <Region>
+    ./scripts/deploy.sh <Bucket-Name> <Stack-Name> <Region> <EnableCORS>
 
 
 **Bucket Name** parameter should have the same value as the name of the bucket that was created in the previous step.
@@ -58,6 +58,9 @@ all consequent execution of the scrip with the same name will update
 the corresponding CF stack rather than create a new one.
 
 **Region** must match the region of the bucket, created earlier.
+
+**EnableCORS** is an optional parameter that can have **Yes** or **No** value depending on whether the CORS should be allowed
+for this endpoint.
 
 
 
