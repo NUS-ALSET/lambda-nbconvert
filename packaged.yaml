@@ -1,18 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Jupyter Executor Service.
-Globals:
-  Api:
-    Cors:
-      AllowHeaders: '''Content-Type, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token'''
-      AllowMethods: '''DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'''
-      AllowOrigin: '''*'''
-      MaxAge: '''600'''
 Parameters:
   CORSDomain:
     Default: '*'
     Type: String
   CORSHeaders:
-    Default: GET,POST
+    Default: Content-Type, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token
+    Type: String
+  CORSMethods:
+    Default: DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT
     Type: String
   EnableCORS:
     AllowedValues:
@@ -23,13 +19,15 @@ Parameters:
 Resources:
   JupyterExecutor:
     Properties:
-      CodeUri: s3://agilevision-playground/ffcf1f289cc8a929ef8ae5944d7e2a0c
+      CodeUri: s3://agilevision-playground/caf23bc38bf3ecdb4e099ea4cc78e815
       Environment:
         Variables:
           CORS_DOMAIN:
             Ref: CORSDomain
           CORS_HEADERS:
             Ref: CORSHeaders
+          CORS_METHODS:
+            Ref: CORSMethods
           ENABLE_CORS:
             Ref: EnableCORS
       Events:

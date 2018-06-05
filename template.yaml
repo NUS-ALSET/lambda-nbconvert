@@ -10,17 +10,13 @@ Parameters:
   CORSDomain:
     Type: String
     Default: "*"
+  CORSMethods:
+    Type: String
+    Default: "DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT" 
   CORSHeaders:
     Type: String
-    Default: "GET,POST"    
+    Default: "Content-Type, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token"   
 Description: Jupyter Executor Service.
-Globals:
-    Api:
-        Cors:
-            AllowMethods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
-            AllowHeaders: "'Content-Type, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token'"
-            AllowOrigin: "'*'"
-            MaxAge: "'600'" 
 Resources:
   JupyterExecutor:
     Type: AWS::Serverless::Function
@@ -38,6 +34,8 @@ Resources:
             Ref: CORSDomain
           CORS_HEADERS:
             Ref: CORSHeaders
+          CORS_METHODS:
+            Ref: CORSMethods
       Events:
         ExecuteNotebook:
           Type: Api

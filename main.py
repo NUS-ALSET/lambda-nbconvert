@@ -71,7 +71,15 @@ homepage = ""
 with open('index.html') as f:
     homepage=f.read()
 
+def populate_cors(response):
+    response['headers']['Access-Control-Allow-Origin'] = os.environ.get('CORS_DOMAIN', '*')
+    response['headers']['Access-Control-Allow-Headers'] = os.environ.get('CORS_HEADERS', 'Content-Type, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token')
+    response['headers']['Access-Control-Allow-Methods'] = os.environ.get('CORS_METHODS', 'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT')
+
+
 def handler(event, context):
+
+    cors_enabled = os.environ.get('ENABLE_CORS', 'false') == 'true'
 
     if event['httpMethod'] == 'GET':
         response = {
@@ -82,6 +90,16 @@ def handler(event, context):
             }
         }
         return response
+    elif event['httpMethod'] == 'OPTIONS' and cors_enabled:
+        response = {
+            "statusCode": 200,
+            "body": None,
+            "headers": {
+                'Content-Type': 'application/json',
+            }
+        }
+        populate_cors(response)     
+        return response   
     else:
         request_body = json.loads(event["body"])
 
@@ -107,9 +125,7 @@ def handler(event, context):
             }
         }
 
-        cors_enabled = os.environ.get('ENABLE_CORS', 'false') == 'true'
         if cors_enabled:
-            response['headers']['Access-Control-Allow-Origin'] = os.environ.get('CORS_DOMAIN', '*')
-            response['headers']['Access-Control-Allow-Headers'] = os.environ.get('CORS_HEADERS', 'GET,POST')
+            populate_cors(response)
 
         return response

@@ -13,5 +13,4 @@ aws cloudformation package \
 
 
 ENABLE_CORS=${4:-Yes}
-
 aws cloudformation deploy --capabilities CAPABILITY_IAM --template-file packaged.yaml --stack-name  $2 --region $3  --parameter-overrides ParameterKey=EnableCORS,ParameterValue=$ENABLE_CORS
