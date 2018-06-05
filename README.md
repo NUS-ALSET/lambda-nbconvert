@@ -125,7 +125,7 @@ elif event['httpMethod'] == 'OPTIONS' and cors_enabled:
 ...       
 ```
 
-And finally, the POST response is being populated with prope CORS headers if CORS is enabled:
+And finally, the POST response is being populated with proper CORS headers if CORS is enabled:
 
 ```
 ...
