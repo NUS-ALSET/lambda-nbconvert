@@ -1,5 +1,21 @@
 AWSTemplateFormatVersion : '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
+Parameters:
+  EnableCORS:
+    Type: String
+    Default: Yes
+    AllowedValues:
+      - Yes
+      - No
+  CORSDomain:
+    Type: String
+    Default: "*"
+  CORSMethods:
+    Type: String
+    Default: "DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT" 
+  CORSHeaders:
+    Type: String
+    Default: "Content-Type, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token"   
 Description: Jupyter Executor Service.
 Resources:
   JupyterExecutor:
@@ -10,6 +26,16 @@ Resources:
       #CodeUri: ./build/code
       Timeout: 180
       MemorySize: 512
+      Environment:
+        Variables:
+          ENABLE_CORS:
+            Ref: EnableCORS
+          CORS_DOMAIN:
+            Ref: CORSDomain
+          CORS_HEADERS:
+            Ref: CORSHeaders
+          CORS_METHODS:
+            Ref: CORSMethods
       Events:
         ExecuteNotebook:
           Type: Api

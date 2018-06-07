@@ -10,4 +10,7 @@ aws cloudformation package \
    --output-template-file packaged.yaml \
    --s3-bucket $1
 
-aws cloudformation deploy  --capabilities CAPABILITY_IAM --template-file packaged.yaml --stack-name  $2 --region $3
+
+
+ENABLE_CORS=${4:-Yes}
+aws cloudformation deploy --capabilities CAPABILITY_IAM --template-file packaged.yaml --stack-name  $2 --region $3  --parameter-overrides ParameterKey=EnableCORS,ParameterValue=$ENABLE_CORS
