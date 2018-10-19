@@ -23,7 +23,7 @@ Resources:
     Properties:
       Handler: main.handler
       Runtime: python3.6
-      #CodeUri: ./build/code
+      CodeUri: ./lambda-nbconvert.zip
       Timeout: 180
       MemorySize: 512
       Environment:
