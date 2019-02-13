@@ -5,11 +5,17 @@ import tempfile
 
 CURRENT_DIR = os.getcwd()
 BUILD_DIR = os.path.join(os.getcwd(), "build", "code")
+OVERLAY_DIR = "/tmp/overlay"
+OVERLAY_URL = 'https://s3.amazonaws.com/lambda-nbconvert/lambda-nbconvert-overlay.tgz'
+
+if not os.path.exists(OVERLAY_DIR):
+    os.system("cd /tmp && curl -s '{}'|tar xzf -".format(OVERLAY_URL))
 
 sys.path.append(CURRENT_DIR)
 sys.path.append(BUILD_DIR)
+sys.path.append(OVERLAY_DIR)
 
-os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ":" + CURRENT_DIR + ":" + BUILD_DIR
+os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ":" + CURRENT_DIR + ":" + BUILD_DIR + ":" + OVERLAY_DIR
 
 
 

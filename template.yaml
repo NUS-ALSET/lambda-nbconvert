@@ -25,7 +25,7 @@ Resources:
       Runtime: python3.6
       CodeUri: ./lambda-nbconvert.zip
       Timeout: 180
-      MemorySize: 512
+      MemorySize: 1024
       Environment:
         Variables:
           ENABLE_CORS:
