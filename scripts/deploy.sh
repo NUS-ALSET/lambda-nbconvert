@@ -29,10 +29,10 @@ set -e
 
 rm -f lambda-nbconvert.zip lambda-nbconvert-overlay.tgz
 tar cf - overlay|gzip -c -9 > lambda-nbconvert-overlay.tgz
-aws s3 cp --acl public-read lambda-nbconvert-overlay.tgz "s3://$bucket/$stackname/"
-overlay_url="https://s3.amazonaws.com/$bucket/$stackname/lambda-nbconvert-overlay.tgz"
-sed -i "s!^OVERLAY_URL *=.*!OVERLAY_URL = '$overlay_url'!" main.py
-zip -ry9 lambda-nbconvert.zip index.html main.py main.78615eaa.js build
+overlay_s3url="s3://$bucket/$stackname/lambda-nbconvert-overlay.tgz"
+aws s3 cp --acl public-read lambda-nbconvert-overlay.tgz "$overlay_s3url"
+sed -i "s!^OVERLAY_S3URL *=.*!OVERLAY_S3URL = '$overlay_s3url'!" main.py
+zip -ry9 lambda-nbconvert.zip index.html main.py s3cat main.78615eaa.js build
 
 aws cloudformation package \
    --template-file template.yaml \

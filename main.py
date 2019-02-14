@@ -6,10 +6,13 @@ import tempfile
 CURRENT_DIR = os.getcwd()
 BUILD_DIR = os.path.join(os.getcwd(), "build", "code")
 OVERLAY_DIR = "/tmp/overlay"
-OVERLAY_URL = 'https://s3.amazonaws.com/lambda-nbconvert/lambda-nbconvert-overlay.tgz'
+OVERLAY_S3URL = 's3://lambda-nbconvert/lambda-nbconvert-4/lambda-nbconvert-overlay.tgz'
 
 if not os.path.exists(OVERLAY_DIR):
-    os.system("cd /tmp && curl -s '{}'|tar xzf -".format(OVERLAY_URL))
+    if 0 == os.system("cd /tmp && /var/task/s3cat '{}'|tar xzf -".format(OVERLAY_S3URL)):
+        print('Successfully downloaded and installed the overlay package!')
+    else:
+        print('Failed to download and/or install the overlay package!')
 
 sys.path.append(CURRENT_DIR)
 sys.path.append(BUILD_DIR)
@@ -46,7 +49,6 @@ def base64_decode_and_persist(filename, contents):
         
 
 def save_files_to_temp_dir(files):
-    print(type(files))
     for key in files:
         print("Processing file: " + key)
         base64_decode_and_persist(key, files[key])

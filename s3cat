@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+import boto3
+from boto3.s3.transfer import S3Transfer
+import sys
+
+client = boto3.client('s3')
+transfer = S3Transfer(client)
+s3url = sys.argv[1]
+if s3url.startswith('s3://'):
+    s3url = s3url[len('s3://'):]
+bucket, key = s3url.split('/', 1)
+transfer.download_file(bucket, key, '/dev/stdout')
