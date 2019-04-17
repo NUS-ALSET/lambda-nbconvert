@@ -262,6 +262,7 @@
       textValue.push(document.getElementById("editField").value);
       var obj = JSON.parse(document.getElementById("ipynbInputTextField").value);
       obj.cells[selectValue].source = textValue;
+      e.options[e.selectedIndex].value = textValue;
       document.getElementById("ipynbInputTextField").value = JSON.stringify(obj);
       loadJSON(obj);
     }
@@ -327,7 +328,7 @@
         var opt = null;
         for(i = 0; i<sampleFile.cells.length; i++) { 
             opt = document.createElement('option');
-            opt.value = sampleFile.cells[i].source;
+            opt.value = sampleFile.cells[i].source.join("");
             opt.innerHTML = i;
             sel.appendChild(opt);
         }
