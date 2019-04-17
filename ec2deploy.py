@@ -13,18 +13,19 @@ args = parser.parse_args()
 session = boto3.Session()
 access_key = session.get_credentials().access_key
 secret_key = session.get_credentials().secret_key
-
+session_token = session.get_credentials().token
 ec2 = session.resource('ec2')
 
 start_up_script="""#!/usr/bin/env bash
 export AWS_ACCESS_KEY_ID='{access_key}'
 export AWS_SECRET_ACCESS_KEY='{secret_key}'
+export AWS_SESSION_TOKEN='{session_token}'
 trap 'shutdown now' EXIT
 set -x -e
 apt update
 apt install -y awscli docker.io zip
 cd /home/ubuntu
-git clone https://github.com/veloman-yunkan/lambda-nbconvert
+git clone https://github.com/Aishwarya26l/lambda-nbconvert.git
 cd lambda-nbconvert
 ./scripts/deploy.sh '{bucket_name}' '{stack_name}' '{region}' '{enable_cors}'
 cat<<'END'
@@ -35,6 +36,7 @@ END
 sleep 10
 """.format(access_key=access_key,
            secret_key=secret_key,
+           session_token=session_token
            bucket_name=args.bucket_name,
            stack_name=args.stack_name,
            region=args.region,
