@@ -225,14 +225,14 @@
       var opt = null;
       for(i = 0; i<obj.cells.length; i++) { 
           opt = document.createElement("option");
-          opt.value = obj.cells[i].source;
+          opt.value = obj.cells[i].source.join("");
           opt.innerHTML = i;
           sel.appendChild(opt);
       }
       document.getElementById("ipynbInputTextField").value = JSON.stringify(obj);
     }
     function myCell(e) {
-      document.getElementById("editField").value = e.target.value
+      document.getElementById("editField").value = e.target.value;
     }
 
     function textFileReaderLoadHandler(event) {
