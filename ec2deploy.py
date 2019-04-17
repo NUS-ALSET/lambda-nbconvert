@@ -36,7 +36,7 @@ END
 sleep 10
 """.format(access_key=access_key,
            secret_key=secret_key,
-           session_token=session_token
+           session_token=session_token,
            bucket_name=args.bucket_name,
            stack_name=args.stack_name,
            region=args.region,
