@@ -10,6 +10,9 @@ parser.add_argument('region')
 parser.add_argument('enable_cors')
 args = parser.parse_args()
 
+#comment occurences of AWS_SESSION_TOKEN and session_token
+#if you are not using an AWS Educate Account
+
 session = boto3.Session()
 access_key = session.get_credentials().access_key
 secret_key = session.get_credentials().secret_key
