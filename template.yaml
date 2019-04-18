@@ -12,20 +12,34 @@ Parameters:
     Default: "*"
   CORSMethods:
     Type: String
-    Default: "DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT" 
+    Default: "DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT"
   CORSHeaders:
     Type: String
-    Default: "Content-Type, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token"   
+    Default: "Content-Type, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token"
 Description: Jupyter Executor Service.
 Resources:
+  FunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ 'lambda.amazonaws.com' ]
+            Action: [ 'sts:AssumeRole' ]
+      Path: /
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
   JupyterExecutor:
     Type: AWS::Serverless::Function
     Properties:
       Handler: main.handler
       Runtime: python3.6
+      Role: !GetAtt FunctionRole.Arn
       CodeUri: ./lambda-nbconvert.zip
       Timeout: 180
-      MemorySize: 512
+      MemorySize: 1024
       Environment:
         Variables:
           ENABLE_CORS:

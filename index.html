@@ -61,10 +61,22 @@
         <h3 class="text-center"> Input text file
           <button type="button" class="btn btn-sm btn-primary" onclick="javascript:document.getElementById('textfile').click()">Upload from a file</button>
           <button type="button" class="btn btn-sm btn-warning" onclick="javascript:document.getElementById('multipleFiles').click()">Select mulitple files</button>
-          <h3>
-            <textarea id="textField" cols=80 rows=6 class="form-control">
-            </textarea>
+        </h3>
+        <textarea id="textField" cols=80 rows=6 class="form-control">
+        </textarea>
 
+            <span style="font-size: 10px; font-weight: 100" id="fileinfo"></span>
+            <br/>
+          <h3 class="text-center"> Edit notebook &nbsp;&nbsp;
+            <select id="selectCell" name="selectCells" onchange="myCell(event)">
+              <option disabled selected>Select cell</option>
+            </select>
+            <button type="button" class="btn btn-sm btn-success" onclick="saveChanges()">Save changes</a>
+          </h3>
+          <div id="root2" cols="80" rows="20" class="form-control code-container">
+          <textarea id="editField" cols="80" rows="6" class="form-control code-container">
+          </textarea>
+        </div>
             <span style="font-size: 10px; font-weight: 100" id="fileinfo"></span>
             <br/>
       </div>
@@ -207,7 +219,20 @@
         var obj = JSON.parse(event.target.result);
       }
       loadJSON(obj);
+      var sel = document.getElementById("selectCell");
+      $("#selectCell").empty().append("<option disabled selected>Select cell</option>");
+      document.getElementById("editField").value = null;
+      var opt = null;
+      for(i = 0; i<obj.cells.length; i++) { 
+          opt = document.createElement("option");
+          opt.value = obj.cells[i].source.join("");
+          opt.innerHTML = i;
+          sel.appendChild(opt);
+      }
       document.getElementById("ipynbInputTextField").value = JSON.stringify(obj);
+    }
+    function myCell(e) {
+      document.getElementById("editField").value = e.target.value;
     }
 
     function textFileReaderLoadHandler(event) {
@@ -229,6 +254,17 @@
       element.click();
 
       document.body.removeChild(element);
+    }
+    function saveChanges() {
+      var e = document.getElementById("selectCell");
+      var selectValue = e.options[e.selectedIndex].innerHTML;
+      var textValue = [];
+      textValue.push(document.getElementById("editField").value);
+      var obj = JSON.parse(document.getElementById("ipynbInputTextField").value);
+      obj.cells[selectValue].source = textValue;
+      e.options[e.selectedIndex].value = textValue;
+      document.getElementById("ipynbInputTextField").value = JSON.stringify(obj);
+      loadJSON(obj);
     }
 
     function downloadNotebook() {
@@ -287,7 +323,15 @@
         "nbformat_minor": 2
         };
         document.getElementById("ipynbInputTextField").value = JSON.stringify(sampleFile);
-        loadJSON(sampleFile)
+        loadJSON(sampleFile);
+        var sel = document.getElementById('selectCell');
+        var opt = null;
+        for(i = 0; i<sampleFile.cells.length; i++) { 
+            opt = document.createElement('option');
+            opt.value = sampleFile.cells[i].source.join("");
+            opt.innerHTML = i;
+            sel.appendChild(opt);
+        }
       }
     )();</script>
 
