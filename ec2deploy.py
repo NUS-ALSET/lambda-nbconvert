@@ -28,7 +28,7 @@ set -x -e
 apt update
 apt install -y awscli docker.io zip
 cd /home/ubuntu
-git clone https://github.com/NUS-ALSET/lambda-nbconvert.git
+git clone https://github.com/Aishwarya26l/lambda-nbconvert.git
 cd lambda-nbconvert
 ./scripts/deploy.sh '{bucket_name}' '{stack_name}' '{region}' '{enable_cors}'
 cat<<'END'
