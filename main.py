@@ -1,14 +1,15 @@
-from timeit import default_timer as timer
-import base64
-import json
-from io import StringIO
-from nbconvert.preprocessors import ExecutePreprocessor
-import nbformat
-import logging
 import os
 import sys
 import ast
 import tempfile
+import logging
+import nbformat
+from nbconvert.preprocessors import ExecutePreprocessor
+from io import StringIO
+import json
+import base64
+
+from timeit import default_timer as timer
 
 CURRENT_DIR = os.getcwd()
 BUILD_DIR = os.path.join(os.getcwd(), "build", "code")
@@ -55,7 +56,6 @@ def save_files_to_temp_dir(files):
 
 def execute_notebook(source):
     """
-
     :param source: Jupyter Notebook
     :return: Result of the notebook invocation
     """
@@ -131,7 +131,7 @@ def handler(event, context):
         duration = end - start
         response = {
             "statusCode": 200,
-            "body": json.dumps({"duration": duration, "ipynb": result, "result": exec_result, "results": json.loads(exec_result)}),
+            "body": json.dumps({"duration": duration, "ipynb": result, "result": exec_result}),
             "headers": {
                 'Content-Type': 'application/json',
             }
