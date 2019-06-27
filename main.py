@@ -116,12 +116,17 @@ def handler(event, context):
         result = json.loads(result)
 
         exec_result = return_result_json()
-
+        print(exec_result)
+        print(type(exec_result))
+        if(exec_result and isinstance(exec_result, str)):
+            exec_result_loaded = json.loads(exec_result)
+        else:
+            exec_result_loaded = exec_result
         end = timer()
         duration = end - start
         response = {
             "statusCode": 200,
-            "body": json.dumps({"duration": duration,"ipynb": result, "result": exec_result, "results":json.loads(exec_result)}),
+            "body": json.dumps({"duration": duration,"ipynb": result, "result": exec_result, "results":exec_result_loaded}),
             "headers": {
                 'Content-Type': 'application/json',
             }
