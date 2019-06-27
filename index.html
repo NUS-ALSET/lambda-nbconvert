@@ -149,7 +149,7 @@
           console.log(userInfo.duration, "seconds of execution time.")
           console.log(userInfo,"userInfo")
           document.getElementById("responseJSON").value = JSON.stringify(userInfo.ipynb);
-          document.getElementById("resultJSON").value = JSON.stringify(userInfo.result);
+          document.getElementById("resultJSON").value = JSON.stringify(userInfo.results,null,'\t');
           
           // pass data to component via problem global object
           window.problem = userInfo.ipynb;
