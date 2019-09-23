@@ -20,9 +20,6 @@ sys.path.append(OVERLAY_DIR)
 
 os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ":" + CURRENT_DIR + ":" + BUILD_DIR + ":" + OVERLAY_DIR
 
-
-
-
 import logging
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
@@ -56,7 +53,6 @@ def save_files_to_temp_dir(files):
 
 def execute_notebook(source):
     """
-
     :param source: Jupyter Notebook
     :return: Result of the notebook invocation
     """
@@ -115,19 +111,22 @@ def handler(event, context):
         attached_files = request_body['files'] if 'files' in request_body else {}
         save_files_to_temp_dir(attached_files)
 
-
-
         start = timer()        
         result = execute_notebook(json.dumps(notebook_source))
         result = json.loads(result)
 
         exec_result = return_result_json()
-
+        print(exec_result)
+        print(type(exec_result))
+        if(exec_result and isinstance(exec_result, str)):
+            exec_result_loaded = json.loads(exec_result)
+        else:
+            exec_result_loaded = exec_result
         end = timer()
         duration = end - start
         response = {
             "statusCode": 200,
-            "body": json.dumps({"duration": duration,"ipynb": result, "result": exec_result}),
+            "body": json.dumps({"duration": duration,"ipynb": result, "result": exec_result, "results":exec_result_loaded}),
             "headers": {
                 'Content-Type': 'application/json',
             }
